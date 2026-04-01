@@ -1,0 +1,167 @@
+# Data Cleaning Log – Olist Delivery Performance Analysis
+
+## Project Context
+This project analyzes e-commerce delivery performance using the Olist dataset.  
+Data was processed across Excel and SQL to ensure high data quality, consistency, and reliability for analysis.
+
+---
+1. Excel Cleaning (Initial Preparation)
+
+The raw CSV files were first cleaned in Excel before loading into SQL.
+Actions Performed:
+- Removed duplicate records across all tables  
+- Standardized column names (lowercase, underscores)  
+- Trimmed leading and trailing spaces  
+- Corrected inconsistent formatting  
+- Checked for missing/null values  
+- Ensured consistent structure across all CSV files  
+
+Outcome:
+Prepared clean, structured CSV files ready for database ingestion.
+
+---
+
+2. SQL Data Cleaning and Transformation
+
+ 2.1 Data Loading
+- Imported CSV files using LOAD DATA LOCAL INFILE  
+- Temporarily disabled foreign key checks:
+  
+  SET FOREIGN_KEY_CHECKS = 0;
+- Ensured efficient bulk loading into raw tables  
+
+---
+ 2.2 Date Standardization
+Problem:  
+Date columns were stored as text and caused errors such as:
+Incorrect datetime value: '10/2/2017 10:56'
+
+Solution:  
+Converted all date fields using:
+
+STR_TO_DATE(column_name, '%m/%d/%Y %H:%i')
+
+Outcome:
+- All date fields converted to DATETIME  
+- Eliminated parsing errors  
+---
+ 2.3 Feature Engineering
+Duration Metrics:
+- approval_duration  
+- dispatch_duration  
+- shipping_duration  
+- total_delivery_duration  
+- estimated_delivery_duration  
+- delivery_delay  
+
+Time Features:
+- order_year  
+- order_month  
+- order_month_name  
+- order_day_name  
+
+Delivery Classification:
+- delivery_status:
+  - Early  
+  - On Time  
+  - Late  
+  - Pending  
+
+---
+
+### 2.4 Percentage Metrics
+
+Metrics Created:
+- approval_pct_of_total  
+- dispatch_pct_of_total  
+- shipping_pct_of_total  
+- approval_pct_of_estimated  
+- dispatch_pct_of_estimated  
+- shipping_pct_of_estimated  
+
+Logic:
+
+CASE 
+  WHEN total_delivery_duration > 0 
+  THEN (approval_duration / total_delivery_duration) * 100
+END
+
+Outcome:
+- Prevented division-by-zero errors  
+- Maintained calculation accuracy  
+
+---
+
+## 3. Data Quality Issues and Fixes
+
+Issue 1: Incorrect Date Formats  
+- Fixed using STR_TO_DATE  
+
+Issue 2: Duplicate Entries  
+- Identified using GROUP BY with HAVING COUNT(*) > 1  
+- Cleaned during Excel preprocessing  
+
+Issue 3: NULL Values  
+- Present in undelivered orders  
+- Decision: Retained as they are logically correct  
+
+Issue 4: Invalid Percentage Totals (~8700 rows)  
+- Caused by missing durations and real-world inconsistencies  
+- Action: Flagged during validation, not forcefully corrected  
+
+Issue 5: Extreme Delivery Durations (>90 days)  
+- Identified as outliers  
+- Preserved for business analysis  
+
+---
+
+## 4. Data Validation Approach
+
+Checks Performed:
+- Null checks on critical fields  
+- Duplicate checks on primary keys  
+- Date logic validation:
+  - Delivery date occurs after purchase date  
+- Negative duration checks  
+- Extreme value checks  
+- Percentage validation (sum approximately equals 100 percent)  
+
+---
+
+## 5. Data Pipeline Summary
+
+Raw CSV  
+→ Excel Cleaning  
+→ SQL Load (Raw Tables)  
+→ Date Conversion  
+→ Feature Engineering  
+→ Validation Checks  
+→ Analysis Views  
+
+---
+
+## Final Outcome
+
+The dataset was transformed into a:
+
+- Clean  
+- Structured  
+- Analysis-ready  
+
+dataset that supports:
+
+- Delivery performance analysis  
+- Bottleneck identification  
+- Seller performance evaluation  
+- Customer experience insights  
+
+---
+
+Key Takeaway
+
+This process ensured:
+- Data integrity  
+- Reproducibility  
+- Scalability  
+
+and reflects real-world data cleaning and preparation workflows used in analytics projects.
