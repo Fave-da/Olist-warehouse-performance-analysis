@@ -1,0 +1,176 @@
+# Data Validation Report – Olist Delivery Performance Analysis
+
+Project Context
+This document outlines the data validation process carried out to ensure data quality, integrity, and reliability after data cleaning and transformation.
+
+The validation was performed using SQL queries and logical checks on the processed dataset.
+
+---
+
+1. Validation Objectives
+
+The purpose of validation was to:
+
+- Ensure completeness of critical fields  
+- Detect duplicate records  
+- Verify logical consistency of dates and durations  
+- Identify outliers and extreme values  
+- Validate calculated metrics and percentages  
+- Confirm readiness of data for analysis  
+
+---
+
+2. Validation Checks Performed
+
+ 2.1 Null Value Checks
+
+Objective:  
+To ensure that critical fields do not contain unexpected null values.
+
+Approach:
+- Used COUNT and column comparisons to identify missing values  
+
+Findings:
+- No null values in primary identifiers (order_id)  
+- Nulls present in delivery-related fields for undelivered orders  
+
+Decision:
+- Null values retained where logically valid (e.g., undelivered orders)
+
+---
+ 2.2 Duplicate Record Checks
+
+Objective:  
+To ensure uniqueness of primary keys.
+
+Approach:
+- Grouped by order_id and checked for counts greater than 1  
+
+Findings:
+- No duplicate primary keys detected after cleaning  
+
+---
+
+ 2.3 Date Consistency Checks
+
+Objective:  
+To ensure chronological correctness of events.
+
+Checks Performed:
+- Delivery date occurs after purchase date  
+- Approval date occurs after purchase date  
+- Shipping sequence follows expected order lifecycle  
+
+Findings:
+- No significant violations detected  
+- Minor inconsistencies were negligible  
+
+--- 2.4 Negative Duration Checks
+
+Objective:  
+To identify invalid time intervals.
+
+Approach:
+- Checked for negative values in duration fields:
+  - approval_duration  
+  - dispatch_duration  
+  - shipping_duration  
+  - total_delivery_duration  
+
+Findings:
+- No significant negative durations  
+- Null values present where data was incomplete  
+
+---
+
+2.5 Extreme Value Checks
+
+Objective:  
+To detect outliers that may affect analysis.
+
+Approach:
+- Flagged delivery durations greater than 90 days  
+
+Findings:
+- Small number of extreme cases identified  
+- Represent real-world anomalies rather than errors  
+
+Decision:
+- Retained for analysis and insight generation  
+
+---
+
+2.6 Percentage Validation
+
+Objective:  
+To verify accuracy of derived percentage metrics.
+
+Checks Performed:
+- Sum of:
+  - approval_pct_of_total  
+  - dispatch_pct_of_total  
+  - shipping_pct_of_total  
+
+- Sum of:
+  - approval_pct_of_estimated  
+  - dispatch_pct_of_estimated  
+  - shipping_pct_of_estimated  
+
+Expected Result:
+- Approximately equal to 100 percent  
+
+Findings:
+- Approximately 8–9 percent of rows showed deviations  
+
+Reason:
+- Missing durations  
+- Real-world inconsistencies  
+- Rounding differences  
+
+Decision:
+- Values were not forcefully corrected  
+- Deviations acknowledged as part of real data behavior  
+
+---
+ 2.7 Referential Integrity Checks
+
+Objective:  
+To ensure consistency across related tables.
+
+Checks Performed:
+- Orders linked correctly to customers  
+- Order items linked to orders  
+- Reviews associated with valid orders  
+
+Findings:
+- No orphan records detected  
+
+---
+
+## 3. Summary of Validation Results
+
+- Data completeness: Acceptable  
+- Duplicate records: None detected  
+- Date consistency: Valid  
+- Negative durations: Not significant  
+- Extreme values: Minimal and acceptable  
+- Percentage accuracy: Mostly valid with minor deviations  
+- Referential integrity: Maintained  
+
+---
+ 4. Conclusion
+
+The dataset passed all critical validation checks and is considered reliable for analysis.
+
+Observed inconsistencies reflect real-world data behavior rather than data processing errors. These were intentionally preserved to maintain analytical integrity.
+
+---
+ 5. Key Takeaway
+
+The validation process ensured that:
+
+- Data is accurate and consistent  
+- Calculations are reliable  
+- The dataset is suitable for business analysis and visualization  
+
+This reflects a structured approach to data quality assurance in real-world analytics workflows.
