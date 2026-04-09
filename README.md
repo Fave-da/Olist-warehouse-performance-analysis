@@ -52,16 +52,6 @@ ELSE 'Late'
 END AS delivery_status
 
 Dataset
-Brazilian E-commerce Public Dataset (Olist) — Kaggle
+Brazilian E-commerce Public Dataset (ta Analyst | Supply Chain and Operations Analytics
 
-Interview Pitch
 
-I analyzed Olist’s logistics pipeline and found that strong on-time delivery performance was misleading due to overestimated delivery dates. I identified shipping as the primary bottleneck, especially during peak demand periods where late deliveries exceeded 20%. I also quantified about a 40% drop in customer satisfaction for delayed orders. This showed the system performs well under normal conditions but lacks scalability and accurate delivery forecasting.
-
-Author
-Favour Nnam
-Data Analyst | Supply Chain and Operations Analytics
-
----
-
-If you want, I can also give you a slightly more “senior-level tone” version that sounds like someone with 2–3 years experience.
